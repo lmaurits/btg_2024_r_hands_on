@@ -1,40 +1,64 @@
 ---
-title: "Report"
+title: "Analysis report"
 author: "Luke Maurits"
 date: '`r Sys.Date()`'
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
+my_demogs <- read_csv("data/demogs.csv")
 my_data <- read_csv("data/processed_data.csv")
 m <- read_rds("fitted_model.rds")
 ```
 
-## R Markdown
+## Raw data summary
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+### Participants
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+We collected data from `r length(unique(my_data$ID))` children,
+`r sum(my_demogs$gender=="F")` females and
+`r sum(my_demogs$gender=="M")` males.  Ages ranged from
+`r min(my_demogs$age)` to `r max(my_demogs$age)`, with a mean age of
+`r round(mean(my_demogs$age),2)` (SD `r round(sd(my_demogs$age),2)`).
 
-```{r cars}
-my_data <- my_data %>%
-  mutate(predictions = predict(m, type="response"))
+### Response rates
 
-ggplot(my_data) +
-  geom_point(aes(x=age, y=predictions, colour=condition))
+Response counts and rates per condition:
 
+```{r}
+my_data %>%
+  group_by(condition) %>%
+  summarise(count=sum(response), rate = mean(response))
 ```
 
-The fitted model's age slope estimate is `r coef(m)[5]`.
-## Including Plots
 
+### Response times
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+Mean response times per condition:
+```{r}
+my_data %>%
+  group_by(condition) %>%
+  summarise(mean_rt = mean(latency))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Logistic regression
+
+### Model summary
+
+```{r}
+summary(m)
+```
+
+### Visualising model predictions
+
+```{r}
+my_plot <- my_data %>%
+  mutate(predictions = predict(m, type="response")) %>%
+  ggplot() +
+  geom_line(aes(x=age, y=predictions, colour=condition, linetype=gender)) +
+  geom_jitter(aes(x=age, y=response, colour=condition, shape=gender), height=0.05, width=0.2)
+ggsave("plots/model_predictions.png", my_plot, create.dir = TRUE)
+my_plot
+```
