@@ -1,7 +1,7 @@
 library(tidyverse)
 
 # Read the processed data
-my_data <- read_csv("processed_data.csv")
+my_data <- read_csv("data/processed_data.csv")
 
 # Fit a model to the data
 # This is a "toy" example but this *could* be a heavy duty data analysis

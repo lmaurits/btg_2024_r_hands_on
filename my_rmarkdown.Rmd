@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 knitr::opts_chunk$set(echo = TRUE)
-my_data <- read_csv("processed_data.csv")
+my_data <- read_csv("data/processed_data.csv")
 m <- read_rds("fitted_model.rds")
 ```
 
@@ -29,6 +29,7 @@ ggplot(my_data) +
 
 The fitted model's age slope estimate is `r coef(m)[5]`.
 ## Including Plots
+
 
 You can also embed plots, for example:
 

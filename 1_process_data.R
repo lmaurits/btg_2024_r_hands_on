@@ -1,8 +1,8 @@
 library(tidyverse)
 
 # Read separate data files for participant demographics and responses
-my_demogs <- read_csv("demogs.csv")
-my_responses <- read_csv("responses.csv")
+my_demogs <- read_csv("data/demogs.csv")
+my_responses <- read_csv("data/responses.csv")
 
 # Join the two tibbles into one, using the shared ID column as a key to link
 # rows
@@ -26,4 +26,4 @@ stopifnot(N_participants == N_unique_demogs)
 # Here we might do other data preparation tasks...
 
 # Save our results to a .csv file which will be read by our analysis script
-write_csv(my_data, "processed_data.csv")
+write_csv(my_data, "data/processed_data.csv")
