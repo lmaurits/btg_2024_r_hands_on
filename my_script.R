@@ -9,5 +9,14 @@ demographics <- my_data %>%
   filter(age > 10) %>%
   unique()
 
+N_participants <- my_data %>%
+  pull(ID) %>%
+  unique() %>%
+  length()
 
-                       
+N_unique_demogs <- my_data %>%
+  select(ID, age, gender) %>%
+  unique() %>%
+  nrow()
+
+stopifnot(N_participants != N_unique_demogs)
